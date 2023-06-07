@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="${car.name}"></title>
+</head>
+
+<head th:insert="blocks/head :: head"></head>
+
+<body class="d-flex flex-column min-vh-100">
+<div th:insert="blocks/nav :: nav"></div>
+<main class="page product-page">
+    <section class="clean-block clean-product dark">
+        <div class="container">
+            <div class="block-heading">
+                <h2 class="text-info" th:text="${car.name}"></h2>
+            </div>
+            <div class="block-content">
+                <div class="product-info">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="carouselExample" class="carousel slide">
+                                <div class="carousel-inner">
+                                    <div th:each="p : ${car.photos}" class="carousel-item active">
+                                        <img th:src="'/img/' + ${p}" class="d-block w-100">
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                                        data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                                        data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info">
+                                <h3 style="font-weight: bold;">Цена за день: <span th:text="${car.price}"></span></h3>
+                                <div class="summary">
+                                    <p style="font-size: 20px;">Статус:&nbsp;
+                                        <span th:if="${car.free}" style="color: var(--bs-green);">Свободен</span>
+                                        <span th:unless="${car.free}" style="color: var(--bs-red);">Арендован</span>
+                                    </p>
+                                </div>
+                                <div th:if="${role == 'MANAGER'}" class="summary mb-3">
+                                    <a th:href="'/cars/edit/' + ${car.id}" class="btn btn-success" type="button"
+                                       style="margin-right: 15px;">
+                                        Редактировать
+                                    </a>
+                                    <a th:if="${car.free}" th:href="'/cars/delete/' + ${car.id}" class="btn btn-danger"
+                                       type="button">Удалить</a>
+                                </div>
+                                <div th:if="${role == 'CLIENT' and car.free}" class="summary">
+                                    <form method="post" th:action="'/cars/rent/' + ${car.id}">
+                                        <div class="row">
+                                            <div class="col-xl-8">
+                                                <input class="form-control form-control-lg" type="number" name="days"
+                                                       min="1" max="100" step="1" placeholder="Дней"></div>
+                                            <div class="col-xl-4">
+                                                <button class="btn btn-primary" type="submit">Арендовать</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="summary">
+                                    <p th:text="${car.description.description}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <td class="stat">Тип кузова</td>
+                                <td th:text="${car.description.bodyType.name}"></td>
+                            </tr>
+                            <tr>
+                                <td class="stat">Объем двигателя</td>
+                                <td th:text="${car.description.capacity}"></td>
+                            </tr>
+                            <tr>
+                                <td class="stat">Вид топлива</td>
+                                <td th:text="${car.description.fuel.name}"></td>
+                            </tr>
+                            <tr>
+                                <td class="stat">Коробка передач</td>
+                                <td th:text="${car.description.transmission.name}"></td>
+                            </tr>
+                            <tr>
+                                <td class="stat">Средний расход на 100 км</td>
+                                <td th:text="${car.description.average}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:insert="blocks/footer :: footer" class="page-footer dark mt-auto"></footer>
+<script src="/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.11.1/baguetteBox.min.js"></script>
+<script src="/js/vanilla-zoom.js"></script>
+<script src="/js/theme.js"></script>
+</body>
+
+</html>
